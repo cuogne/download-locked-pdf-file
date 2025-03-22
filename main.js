@@ -8,8 +8,28 @@
 let jspdf = document.createElement("script");
 
 jspdf.onload = function () {
-    let pdf = new jsPDF();
     let elements = document.getElementsByTagName("img");
+
+    let checkLandscapeImg = false;
+
+    // duyet qua tat ca cac trang trong pdf
+    for (let i = 0; i < elements.length; i++) {
+        let img = elements[i];
+
+        if (!/^blob:/.test(img.src)) continue; // skip blob
+
+        // width > height
+        if (img.naturalWidth > img.naturalHeight) {
+            checkLandscapeImg = true;
+            break;
+        }
+    }
+
+    let pdf = new jsPDF({
+        orientation: checkLandscapeImg ? 'landscape' : 'portrait',
+        unit: 'mm',
+        format: 'a4'
+    });
 
     for (let i = 0; i < elements.length; i++) {
         let img = elements[i];
